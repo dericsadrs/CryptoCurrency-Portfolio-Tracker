@@ -53,6 +53,7 @@ class BinanceAuth:
                 return []
 
             account_data = response.json()
+            logger.info(f"Accoun Data: {account_data}")
             return account_data['balances']
 
         except Exception as e:
