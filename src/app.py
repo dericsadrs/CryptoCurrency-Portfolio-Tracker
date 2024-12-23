@@ -1,4 +1,4 @@
-from services.binance.binance_trade_history import BinanceTradeHistory
+from services.binance.binance_exchange import BinanceExchange
 from services.googlesheet_handler import GoogleSheetHandler
 from services.helpers import clean_asset_name
 import logging
@@ -7,7 +7,7 @@ from google_sheet_config import Worksheet
 logger = logging.getLogger(__name__)
 
 def get_available_pairs():
-    client = BinanceTradeHistory()
+    client = BinanceExchange()
     balances = client.auth.get_account_info()
 
     assets = [clean_asset_name(b['asset']) for b in balances 
@@ -16,7 +16,7 @@ def get_available_pairs():
     return trading_pairs
 
 def get_trade_history_for_pairs():
-    client = BinanceTradeHistory()
+    client = BinanceExchange()
     available_pairs = get_available_pairs()
     
     all_trades = []
