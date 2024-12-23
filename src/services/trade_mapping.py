@@ -15,6 +15,35 @@ class TradeHeaders(str, Enum):
     SIDE = 'Side'    # Buy/Sell
     TIME = 'Time'
 
+def map_bybit_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Maps Bybit trade response to simplified universal format
+    
+    Args:
+        trade: Raw trade data from Bybit API
+        
+    Returns:
+        Dict with standardized trade data
+    """
+    # Convert timestamp to readable format
+    timestamp_ms = int(trade.get('execTime', 0))
+    readable_time = datetime.datetime.fromtimestamp(timestamp_ms / 1000).strftime('%Y-%m-%d %H:%M:%S')
+    
+    # Get price and quantity
+    price = float(trade.get('price', 0))
+    quantity = float(trade.get('execQty', 0))
+    
+    return {
+        TradeHeaders.EXCHANGE: 'Bybit',
+        TradeHeaders.SYMBOL: trade.get('symbol', ''),
+        TradeHeaders.TRADE_ID: str(trade.get('execId', '')),
+        TradeHeaders.PRICE: str(price),
+        TradeHeaders.QUANTITY: str(quantity),
+        TradeHeaders.TOTAL: str(price * quantity),
+        TradeHeaders.SIDE: trade.get('side', '').upper(),
+        TradeHeaders.TIME: readable_time
+    }
+    
 def map_binance_trade(trade: Dict[str, Any]) -> Dict[str, Any]:
     """
     Maps Binance trade response to simplified universal format
